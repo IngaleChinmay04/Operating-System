@@ -1,80 +1,78 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <numeric>
-
+#include <bits\stdc++.h>
 using namespace std;
 
-struct Process
+typedef struct
 {
     string processId;
     int at;
     int bt;
-    int ct = -1;
-    int tat = -1;
-    int wt = -1;
-};
+    int ct = -2;
+    int tat = -2;
+    int wt = -2;
+    int priority;
+} Process;
 
 int main()
 {
+
     int n;
-
-    // Input the number of processes
-    cout << "Enter the number of processes: ";
+    cout << "Enter The no of Processes.:" << endl;
     cin >> n;
-
-    // Input validation
-    if (n <= 0)
-    {
-        cerr << "Invalid number of processes." << endl;
-        return 1;
-    }
 
     vector<Process> processes(n);
 
-    // Input the process details
     for (int i = 0; i < processes.size(); i++)
     {
         cout << "Enter Process Id, Arrival time and Burst time and priority respectively: ";
-        cin >> processes[i].processId >> processes[i].at >> processes[i].bt;
+        cin >> processes[i].processId >> processes[i].at >> processes[i].bt >> processes[i].priority;
         cout << endl;
     }
 
-    // Sort processes based on Arrival Time
-    sort(processes.begin(), processes.end(), [](const Process &a, const Process &b)
+    sort(processes.begin(), processes.end(), [](const auto &a, const auto &b)
          { return a.at < b.at; });
 
-    // Display sorted processes
-    cout << "User input after sorting:" << endl;
-    cout << "Process    AT      BT" << endl;
-    for (const auto &process : processes)
-    {
-        cout << process.processId << "        " << process.at << "        " << process.bt << endl;
-    }
+    int currTime = 0;
+    currTime = processes[0].at;
 
-    // Calculate Completion Time (CT), Turn Around Time (TAT), and Waiting Time (WT)
-    int currentTime = 0;
+    currTime += processes[0].bt;
+    processes[0].ct = currTime;
+    processes[0].priority = -1;
 
-    for (int i = 0; i < n; i++)
+    int p = n - 1;
+
+    while (p > 0)
     {
-        if (currentTime < processes[i].at)
+        int currentProcessIndex = -1;
+        int currentPriority = INT_MAX;
+        for (int i = 0; i < n; i++)
         {
-            currentTime = processes[i].at; // Processor is idle until the next process arrives
+            if (processes[i].at <= currTime && processes[i].priority != -1 && processes[i].ct == -2)
+            {
+                if (processes[i].priority < currentPriority)
+                {
+                    currentProcessIndex = i;
+                    currentPriority = processes[i].priority;
+                }
+            }
         }
+        if (currentProcessIndex != -1)
+        {
 
-        currentTime += processes[i].bt;
-        processes[i].ct = currentTime;
+            currTime += processes[currentProcessIndex].bt;
+            processes[currentProcessIndex].ct = currTime;
+            processes[currentProcessIndex].priority = -1;
+            p--;
+        }
+        else
+        {
+            currTime++;
+        }
     }
-
-    // Calculating Turn around time
 
     for (int i = 0; i < n; i++)
     {
         processes[i].tat = processes[i].ct - processes[i].at;
     }
-
-    // Calculating Waiting Time
 
     for (int i = 0; i < n; i++)
     {

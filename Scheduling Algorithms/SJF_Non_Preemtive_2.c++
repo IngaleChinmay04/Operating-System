@@ -1,39 +1,31 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <numeric>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-struct Process
+typedef struct
 {
     string processId;
     int at;
     int bt;
-    int ct = -1;
-    int tat = -1;
-    int wt = -1;
-};
+    int ct = -2;
+    int tat = -2;
+    int wt = -2;
+
+} Process;
 
 int main()
 {
-    int n;
 
-    // Input the number of processes
-    cout << "Enter the number of processes: ";
+    int n; // for no of processes
+
+    // Asking User the no of processes
+
+    cout << "Enter The no of Processes.:" << endl;
     cin >> n;
-
-    // Input validation
-    if (n <= 0)
-    {
-        cerr << "Invalid number of processes." << endl;
-        return 1;
-    }
 
     vector<Process> processes(n);
 
-    // Input the process details
+    // Taking input from user.
+
     for (int i = 0; i < processes.size(); i++)
     {
         cout << "Enter Process Id, Arrival time and Burst time and priority respectively: ";
@@ -41,31 +33,57 @@ int main()
         cout << endl;
     }
 
-    // Sort processes based on Arrival Time
-    sort(processes.begin(), processes.end(), [](const Process &a, const Process &b)
-         { return a.at < b.at; });
-
-    // Display sorted processes
-    cout << "User input after sorting:" << endl;
-    cout << "Process    AT      BT" << endl;
-    for (const auto &process : processes)
+    // Finding minimum index of arrival time that minimum will be the first to get executed.
+    int j = -1;
+    int a = INT_MAX;
+    for (int i = 0; i < processes.size(); i++)
     {
-        cout << process.processId << "        " << process.at << "        " << process.bt << endl;
-    }
-
-    // Calculate Completion Time (CT), Turn Around Time (TAT), and Waiting Time (WT)
-    int currentTime = 0;
-
-    for (int i = 0; i < n; i++)
-    {
-        if (currentTime < processes[i].at)
+        if (processes[i].at < a)
         {
-            currentTime = processes[i].at; // Processor is idle until the next process arrives
+            j = i;
+            a = processes[i].at;
+        }
+    }
+    // Completing the first process.
+    int currTime = 0;
+    currTime = processes[j].at;
+    currTime += processes[j].bt;
+    processes[j].ct = currTime;
+
+    int p = n - 1; // first process complete.
+
+    int k = INT_MAX;
+    int b = -1;
+
+    // running loop for completing other processes.
+
+    while (p > 0)
+    {
+        k = INT_MAX;
+        for (int i = 0; i < processes.size(); i++)
+        {
+            if (processes[i].at <= currTime && processes[i].ct == -2)
+            {
+                if (processes[i].bt < k)
+                {
+                    b = i;
+                    k = processes[i].bt;
+                }
+            }
         }
 
-        currentTime += processes[i].bt;
-        processes[i].ct = currentTime;
+        if (b != -1)
+        {
+            currTime += processes[b].bt;
+            processes[b].ct = currTime;
+            p--;
+        }
+        else
+        {
+            currTime++;
+        }
     }
+    cout << endl;
 
     // Calculating Turn around time
 

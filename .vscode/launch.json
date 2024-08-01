@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/dell inspiron/Desktop/Os",
-      "program": "c:/Users/dell inspiron/Desktop/Os/build/Debug/outDebug",
+      "cwd": "c:/Users/dell inspiron/Desktop/TY AIDS SEM 5/Os/Scheduling Algorithms",
+      "program": "c:/Users/dell inspiron/Desktop/TY AIDS SEM 5/Os/Scheduling Algorithms/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
